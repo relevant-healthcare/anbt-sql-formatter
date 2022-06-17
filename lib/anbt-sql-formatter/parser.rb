@@ -28,7 +28,9 @@ class AnbtSql
 
       # ２文字からなる記号。
       # なお、|| は文字列結合にあたります。
-      @two_character_symbol = [ "<>", "<=", ">=", "||", "!=" ]
+      @two_character_symbol = [ "<>", "<=", ">=", "||", "!=", "~*" ]
+
+      @three_character_symbol = [ "!~*" ]
     end
 
 
@@ -66,7 +68,7 @@ class AnbtSql
     # アンダースコアは記号とは扱いません
     # これ以降の文字の扱いは保留
     def symbol?(c)
-      %w(" ? % & ' \( \) | * + , - . / : ; < = > !).include? c
+      %w(" ? % & ' \( \) | * + , - . / : ; < = > ! ~).include? c
       #"
     end
 
@@ -160,13 +162,28 @@ class AnbtSql
 
         # ２文字の記号かどうか調べる
         ch2 = char_at(@before, @pos)
+        two_char = false
         #for (int i = 0; i < two_character_symbol.length; i++) {
         for i in 0...@two_character_symbol.length
           if (char_at(@two_character_symbol[i], 0) == @char &&
               char_at(@two_character_symbol[i], 1) == ch2)
             @pos += 1
             s += ch2
+            two_char = true
             break
+          end
+        end
+
+        if !two_char && @pos < (@before.length() - 1)
+          ch3 = char_at(@before, @pos+1)
+          for i in 0...@three_character_symbol.length
+            if (char_at(@three_character_symbol[i], 0) == @char &&
+                char_at(@three_character_symbol[i], 1) == ch2 &&
+                char_at(@three_character_symbol[i], 2) == ch3)
+              @pos += 2
+              s += ch2 + ch3
+              break
+            end
           end
         end
 
