@@ -28,7 +28,7 @@ class AnbtSql
 
       # ２文字からなる記号。
       # なお、|| は文字列結合にあたります。
-      @two_character_symbol = [ "<>", "<=", ">=", "||", "!=", "~*" ]
+      @two_character_symbol = [ "<>", "<=", ">=", "||", "!=", "~*", "::" ]
 
       @three_character_symbol = [ "!~*" ]
     end
