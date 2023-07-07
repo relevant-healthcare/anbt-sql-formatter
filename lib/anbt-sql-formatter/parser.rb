@@ -134,7 +134,10 @@ class AnbtSql
       elsif letter?(@char)
         s = ""
         # 文字列中のドットについては、文字列と一体として考える。
-        while (letter?(@char) || digit?(@char) || @char == '.')
+        # Dots and dot-stars are treated as one unit in the string. This
+        # allows us to treat `my_table.*` in `select my_table.* from ...` as a
+        # single token.
+        while (letter?(@char) || digit?(@char) || @char == '.' || @char == '*')
           s += @char
           @pos += 1
           if (@pos >= @before.length())

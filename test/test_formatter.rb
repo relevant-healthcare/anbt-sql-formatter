@@ -523,6 +523,21 @@ class TestAnbtSqlFormatter < Test::Unit::TestCase
     )
   end
 
+  def test_format_select_all
+    assert_equals(
+      "should allow .* in selections",
+      strip_indent(
+        <<-EOB
+        SELECT
+        <-indent-><-indent->my_table.*
+        <-indent->FROM
+        <-indent-><-indent->my_table
+        ;
+        EOB
+      ),
+      @fmt.format("SELECT my_table.* FROM my_table;")
+    )
+  end
 
   def test_split_to_statements
     msg = "split_to_statements - "
